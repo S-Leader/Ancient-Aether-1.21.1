@@ -1,0 +1,15 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 32146754,
+    "separation": 8,
+    "spacing": 20,
+    "spread_type": "triangular"
+  },
+  "structures": [
+    {
+      "structure": "ancient_aether:sentry_laboratory",
+      "weight": 1
+    }
+  ]
+}

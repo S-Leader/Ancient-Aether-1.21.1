@@ -1,0 +1,135 @@
+package net.builderdog.ancient_aether.client.renderer.accessory;
+
+import com.aetherteam.aether.attachment.AetherDataAttachments;
+import com.aetherteam.aether.client.renderer.AetherModelLayers;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import io.wispforest.accessories.api.client.AccessoryRenderer;
+import io.wispforest.accessories.api.slot.SlotReference;
+import net.builderdog.ancient_aether.item.equipment.accessories.shields.ShieldAccessoryItem;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.PlayerModel;
+import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.resources.PlayerSkin;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+
+public class ShieldRenderer implements AccessoryRenderer {
+    private final HumanoidModel<LivingEntity> shieldModel;
+    private final PlayerModel<LivingEntity> shieldModelSlim;
+    public final HumanoidModel<LivingEntity> shieldModelArm;
+    public final PlayerModel<LivingEntity> dummyArm;
+    public final PlayerModel<LivingEntity> dummyArmSlim;
+
+    public ShieldRenderer() {
+        shieldModel = new HumanoidModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(AetherModelLayers.SHIELD_OF_REPULSION));
+        shieldModelSlim = new PlayerModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(AetherModelLayers.SHIELD_OF_REPULSION_SLIM) , true);
+        shieldModelArm = new HumanoidModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(AetherModelLayers.SHIELD_OF_REPULSION_ARM));
+        dummyArm = new PlayerModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(ModelLayers.PLAYER), false);
+        dummyArmSlim = new PlayerModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(ModelLayers.PLAYER_SLIM), true);
+    }
+
+    @Override
+    public <M extends LivingEntity> void render(ItemStack stack, SlotReference reference, PoseStack poseStack, EntityModel<M> entityModel, MultiBufferSource buffer, int packedLight, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        LivingEntity livingEntity = reference.entity();
+        ShieldAccessoryItem shield = (ShieldAccessoryItem) stack.getItem();
+        ResourceLocation texture;
+        HumanoidModel<LivingEntity> model;
+
+        if (livingEntity instanceof AbstractClientPlayer player && entityModel instanceof PlayerModel<?>) {
+            model = player.getSkin().model() == PlayerSkin.Model.SLIM ? shieldModelSlim : shieldModel;
+            texture = player.getSkin().model() == PlayerSkin.Model.SLIM ? shield.getShieldSlimTexture() : shield.getShieldTexture();
+        } else {
+            model = shieldModel;
+            texture = shield.getShieldTexture();
+        }
+
+        entityModel.copyPropertiesTo((EntityModel<M>) model);
+        AccessoryRenderer.followBodyRotations(reference.entity(), model);
+        VertexConsumer consumer = ItemRenderer.getArmorFoilBuffer(buffer, RenderType.entityTranslucent(texture), false);
+        model.renderToBuffer(poseStack, consumer, packedLight, OverlayTexture.NO_OVERLAY);
+    }
+
+    @Override
+    public boolean shouldRenderInFirstPerson(HumanoidArm arm, ItemStack stack, SlotReference reference) {
+        return !(reference.entity() instanceof Player player) || !player.getData(AetherDataAttachments.AETHER_PLAYER).isWearingInvisibilityCloak();
+    }
+
+    @Override
+    public <M extends LivingEntity> void renderOnFirstPerson(HumanoidArm arm, ItemStack stack, SlotReference reference, PoseStack matrices, EntityModel<M> model, MultiBufferSource buffer, int light) {
+        LivingEntity livingEntity = reference.entity();
+        if (livingEntity instanceof AbstractClientPlayer player) {
+            this.renderFirstPerson(stack, matrices, buffer, light, player, arm);
+        }
+    }
+
+    public void renderFirstPerson(ItemStack stack, PoseStack poseStack, MultiBufferSource buffer, int packedLight, AbstractClientPlayer player, HumanoidArm arm) {
+        boolean isSlim = player.getSkin().model() == PlayerSkin.Model.SLIM;
+        if (!player.isInvisible()) {
+            setupHand(isSlim ? dummyArmSlim : dummyArm, poseStack, buffer, packedLight, player, arm, isSlim);
+        }
+        setupShieldOnHand(stack, shieldModelArm, poseStack, buffer, packedLight, player, arm, isSlim);
+    }
+
+    private void setupShieldOnHand(ItemStack stack, HumanoidModel<LivingEntity> model, PoseStack poseStack, MultiBufferSource buffer, int packedLight, AbstractClientPlayer player, HumanoidArm arm, boolean isSlim) {
+        setupModel(model, player);
+        ShieldAccessoryItem shield = (ShieldAccessoryItem) stack.getItem();
+        VertexConsumer consumer = ItemRenderer.getArmorFoilBuffer(buffer, RenderType.entityTranslucent(shield.getShieldTexture()), stack.isEnchanted());
+        if (isSlim) {
+            poseStack.translate((arm != HumanoidArm.LEFT ? 1.0F : -1.0F) * 0.05F, 0.0F, 0.0F);
+        }
+        if (arm == HumanoidArm.RIGHT) {
+            renderShieldOnHand(model.rightArm, poseStack, packedLight, consumer);
+        } else if (arm == HumanoidArm.LEFT) {
+            renderShieldOnHand(model.leftArm, poseStack, packedLight, consumer);
+        }
+    }
+
+    private void setupHand(PlayerModel<LivingEntity> model, PoseStack poseStack, MultiBufferSource buffer, int packedLight, AbstractClientPlayer player, HumanoidArm arm, boolean isSlim) {
+        setupModel(model, player);
+
+        VertexConsumer consumer = buffer.getBuffer(RenderType.entityTranslucent(player.getSkin().texture()));
+        if (isSlim) {
+            poseStack.translate((arm != HumanoidArm.LEFT ? 1.0F : -1.0F) * -0.05F, 0.0F, 0.0F);
+        }
+        if (arm == HumanoidArm.RIGHT) {
+            renderHand(model.rightArm, model.rightSleeve, poseStack, packedLight, consumer);
+        } else if (arm == HumanoidArm.LEFT) {
+            renderHand(model.leftArm, model.leftSleeve, poseStack, packedLight, consumer);
+        }
+    }
+
+    private void setupModel(HumanoidModel<LivingEntity> model, AbstractClientPlayer player) {
+        model.setAllVisible(false);
+        model.attackTime = 0.0F;
+        model.crouching = false;
+        model.swimAmount = 0.0F;
+        model.setupAnim(player, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
+    }
+
+    private void renderShieldOnHand(ModelPart shieldArm, PoseStack poseStack, int packedLight, VertexConsumer consumer) {
+        shieldArm.visible = true;
+        shieldArm.xRot = 0.0F;
+        shieldArm.render(poseStack, consumer, packedLight, OverlayTexture.NO_OVERLAY);
+    }
+
+    private void renderHand(ModelPart dummyArm, ModelPart dummySleeve, PoseStack poseStack, int packedLight, VertexConsumer consumer) {
+        dummyArm.visible = true;
+        dummySleeve.visible = true;
+        dummyArm.xRot = 0.0F;
+        dummySleeve.xRot = 0.0F;
+        dummyArm.render(poseStack, consumer, packedLight, OverlayTexture.NO_OVERLAY);
+        dummySleeve.render(poseStack, consumer, packedLight, OverlayTexture.NO_OVERLAY);
+    }
+}

@@ -1,0 +1,23 @@
+{
+  "type": "nitrogen_internals:add_dungeon_loot",
+  "conditions": [
+    {
+      "condition": "neoforge:loot_table_id",
+      "loot_table_id": "ancient_aether:chests/dungeon/bronze/bronze_dungeon_reward"
+    }
+  ],
+  "entries": [
+    {
+      "data": {
+        "id": "aether_genesis:fleeting_stone",
+        "count": 1
+      },
+      "weight": 4
+    }
+  ],
+  "rolls": {
+    "type": "minecraft:uniform",
+    "max_inclusive": 1,
+    "min_inclusive": 1
+  }
+}

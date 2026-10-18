@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "tag": "aether_genesis:aether_genesis_planks_crafting"
+    }
+  },
+  "pattern": [
+    "##",
+    "##"
+  ],
+  "result": {
+    "id": "aether_beyond_parity:skyroot_crafting_table"
+  },
+  "show_notification": true
+}

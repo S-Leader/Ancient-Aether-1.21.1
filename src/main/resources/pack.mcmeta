@@ -1,0 +1,9 @@
+{
+  "pack": {
+    "description": {
+      "text": "ancient_aether_resources"
+    },
+    "pack_format": 34,
+    "supported_formats": [34, 61]
+  }
+}

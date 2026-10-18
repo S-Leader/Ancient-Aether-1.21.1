@@ -1,0 +1,19 @@
+{
+  "required": true,
+  "package": "net.builderdog.ancient_aether.mixin",
+  "minVersion": "0.8",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "ancient_aether.refmap.json",
+  "mixins": [
+    "common.AetherGrassBlockMixin",
+    "common.BlockMixin",
+    "common.SliderMixin",
+    "common.SnowyDirtMixin",
+    "common.accessor.PerlinNoiseAccessor",
+    "compatibility.DARegionMixin",
+    "compatibility.GenesisRegionMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

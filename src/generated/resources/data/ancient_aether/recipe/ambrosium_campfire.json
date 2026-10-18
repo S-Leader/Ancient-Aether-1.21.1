@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "tag": "minecraft:logs"
+    },
+    "/": {
+      "tag": "c:rods/wooden"
+    },
+    "A": {
+      "item": "aether:ambrosium_shard"
+    }
+  },
+  "pattern": [
+    " / ",
+    "/A/",
+    "###"
+  ],
+  "result": {
+    "id": "ancient_aether:ambrosium_campfire"
+  },
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:mod_loaded",
+        "modid": "aether_beyond_parity"
+      }
+    }
+  ]
+}

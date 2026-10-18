@@ -1,0 +1,142 @@
+plugins {
+    id 'java-library'
+    id 'eclipse'
+    id 'idea'
+    id 'maven-publish'
+    id 'net.neoforged.moddev' version "${moddevgradle_version}"
+}
+
+tasks.named('wrapper', Wrapper).configure {
+    distributionType = Wrapper.DistributionType.BIN
+}
+
+version = "${minecraft_version}-${mod_version}-neoforge"
+group = mod_group_id
+
+base {
+    archivesName = mod_id
+}
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+
+neoForge {
+    version = project.neo_version
+
+    runs {
+        configureEach {
+            systemProperty 'forge.logging.markers', 'REGISTRIES'
+            systemProperty 'forge.logging.console.level', 'debug'
+            logLevel = org.slf4j.event.Level.INFO
+        }
+
+        client {
+            client()
+            systemProperty 'forge.enabledGameTestNamespaces', mod_id
+        }
+
+        server {
+            server()
+            systemProperty 'forge.enabledGameTestNamespaces', mod_id
+            programArgument '--nogui'
+        }
+
+        gameTestServer {
+            type = "gameTestServer"
+            systemProperty 'neoforge.enabledGameTestNamespaces', mod_id
+        }
+
+        data {
+            data()
+            programArguments.addAll '--mod', mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath(), '--existing', file('src/generated/resources/').getAbsolutePath(), '--existing-mod', 'aether', '--existing-mod', 'nitrogen_internals', '--existing-mod', 'cumulus_menus'
+        }
+    }
+
+    mods {
+        "${mod_id}" {
+            sourceSet(sourceSets.main)
+        }
+    }
+}
+
+sourceSets.main.resources {
+    srcDir 'src/generated/resources'
+}
+
+processResources {
+    exclude '.cache/'
+}
+
+configurations {
+    runtimeClasspath.extendsFrom localRuntime
+}
+
+dependencies {
+    implementation "com.aetherteam.aether:aether:${project.aether_version}"
+    implementation "com.aetherteam.nitrogen:nitrogen_internals:${project.nitrogen_version}"
+    implementation "com.aetherteam.cumulus:cumulus_menus:${project.cumulus_version}"
+    implementation "io.wispforest:accessories-neoforge:${project.accessories_version}+${project.minecraft_version}"
+    implementation "com.github.glitchfiend:TerraBlender-neoforge:${project.terrablender_version}"
+    implementation "maven.modrinth:aeroblender:${project.aeroblender_version}"
+    implementation files("libs/aether_genesis-1.21.1-0.0.1-neoforge.jar")
+    implementation "curse.maven:deep-aether-852465:7843283"
+}
+
+repositories {
+    maven { url = "https://packages.aether-mod.net/The-Aether" }
+    maven { url = "https://packages.aether-mod.net/Nitrogen" }
+    maven { url = "https://packages.aether-mod.net/Cumulus" }
+    maven { url = "https://maven.wispforest.io/releases" }
+    maven { url = "https://maven.su5ed.dev/releases" }
+    maven { url = "https://api.modrinth.com/maven" }
+    maven { url = "https://maven.blamejared.com" }
+    maven { url = 'https://maven.minecraftforge.net/' }
+    maven { url = 'https://www.cursemaven.com/' }
+    mavenCentral()
+}
+
+var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
+    var replaceProperties = [
+            mod_id                 : mod_id,
+            mod_name               : mod_name,
+            mod_version            : mod_version,
+            mod_license            : mod_license,
+            mod_url                : mod_url,
+            mod_tracker            : mod_tracker,
+            mod_credits            : mod_credits,
+            mod_authors            : mod_authors,
+            mod_description        : mod_description,
+            minecraft_version      : minecraft_version,
+            minecraft_version_range: minecraft_version_range,
+            neo_version            : neo_version,
+            neo_version_range      : neo_version_range,
+            loader_version_range   : loader_version_range,
+            aether_version         : aether_version,
+            aether_version_range   : aether_version_range,
+            accessories_version    : accessories_version,
+            terrablender_version_range: terrablender_version_range,
+            aeroblender_version_range : aeroblender_version_range
+    ]
+    inputs.properties replaceProperties
+    expand replaceProperties
+    from "src/main/templates"
+    into "build/generated/sources/modMetadata"
+}
+sourceSets.main.resources.srcDir generateModMetadata
+neoForge.ideSyncTask generateModMetadata
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+publishing {
+    publications {
+        register('mavenJava', MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            url "file://${project.projectDir}/repo"
+        }
+    }
+}
