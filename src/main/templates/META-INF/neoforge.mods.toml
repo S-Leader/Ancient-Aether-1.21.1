@@ -4,73 +4,79 @@ license = "${mod_license}"
 issueTrackerURL = "${mod_tracker}"
 
 [[mods]]
-    modId = "${mod_id}"
-    version = "${mod_version}"
-    displayName = "${mod_name}"
-    displayURL = "${mod_url}"
-    logoFile = "${mod_id}.png"
-    credits = "${mod_credits}"
-    authors = "${mod_authors}"
-    description = '''${mod_description}'''
+modId = "${mod_id}"
+version = "${mod_version}"
+displayName = "${mod_name}"
+displayURL = "${mod_url}"
+logoFile = "${mod_id}.png"
+credits = "${mod_credits}"
+authors = "${mod_authors}"
+description = '''${mod_description}'''
 
-[[dependencies.${mod_id}]]
-    modId = "neoforge"
-    type = "required"
-    versionRange = "${neo_version_range}"
-    ordering = "NONE"
-    side = "BOTH"
-[[dependencies.${mod_id}]]
-    modId = "minecraft"
-    type = "required"
-    versionRange = "${minecraft_version_range}"
-    ordering = "NONE"
-    side = "BOTH"
-[[dependencies.${mod_id}]]
-    modId = "aether"
-    type = "required"
-    versionRange = "${aether_version_range}"
-    ordering = "AFTER"
-    side = "BOTH"
-[[dependencies.${mod_id}]]
-    modId = "terrablender"
-    type = "required"
-    versionRange = "${terrablender_version_range}"
-    ordering = "AFTER"
-    side = "BOTH"
-[[dependencies.${mod_id}]]
-    modId = "aeroblender"
-    type = "required"
-    versionRange = "${aeroblender_version_range}"
-    ordering = "AFTER"
-    side = "BOTH"
+[[dependencies.${ mod_id }]]
+modId = "neoforge"
+type = "required"
+versionRange = "${neo_version_range}"
+ordering = "NONE"
+side = "BOTH"
+[[dependencies.${ mod_id }]]
+modId = "minecraft"
+type = "required"
+versionRange = "${minecraft_version_range}"
+ordering = "NONE"
+side = "BOTH"
+[[dependencies.${ mod_id }]]
+modId = "aether"
+type = "required"
+versionRange = "${aether_version_range}"
+ordering = "AFTER"
+side = "BOTH"
+[[dependencies.${ mod_id }]]
+modId = "terrablender"
+type = "required"
+versionRange = "${terrablender_version_range}"
+ordering = "AFTER"
+side = "BOTH"
+[[dependencies.${ mod_id }]]
+modId = "aeroblender"
+type = "required"
+versionRange = "${aeroblender_version_range}"
+ordering = "AFTER"
+side = "BOTH"
 
-[[dependencies.${mod_id}]]
-    modId = "accessories"
-    type = "required"
-    versionRange = "[0,)"
-    ordering = "AFTER"
-    side = "BOTH"
+[[dependencies.${ mod_id }]]
+modId = "accessories"
+type = "required"
+versionRange = "[0,)"
+ordering = "AFTER"
+side = "BOTH"
 
-[[dependencies.${mod_id}]]
-    modId = "aether_beyond_parity"
-    type = "optional"
-    ordering = "AFTER"
-    side = "BOTH"
+[[dependencies.${ mod_id }]]
+modId = "aether_beyond_parity"
+type = "optional"
+ordering = "AFTER"
+side = "BOTH"
 
-[[dependencies.${mod_id}]]
-    modId = "deep_aether"
-    type = "optional"
-    ordering = "AFTER"
-    side = "BOTH"
+[[dependencies.${ mod_id }]]
+modId = "deep_aether"
+type = "optional"
+ordering = "AFTER"
+side = "BOTH"
 
-[[dependencies.${mod_id}]]
-    modId = "aether_genesis"
-    type = "optional"
-    ordering = "AFTER"
-    side = "BOTH"
+[[dependencies.${ mod_id }]]
+modId = "aether_genesis"
+type = "optional"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.${ mod_id }]]
+modId = "aether_dungeon_plus"
+type = "optional"
+ordering = "AFTER"
+side = "BOTH"
 
 [[mixins]]
-    config = "${mod_id}.mixins.json"
+config = "${mod_id}.mixins.json"
 
 [[accessTransformers]]
-    file = "META-INF/accesstransformer.cfg"
+file = "META-INF/accesstransformer.cfg"

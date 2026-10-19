@@ -1,0 +1,10 @@
+{
+  "pack": {
+    "description": "Ancient Aether 1.21.1 compatibility with aether_dungeon_plus",
+    "pack_format": 48,
+    "supported_formats": [
+      48,
+      65
+    ]
+  }
+}

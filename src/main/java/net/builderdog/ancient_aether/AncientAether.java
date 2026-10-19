@@ -1,5 +1,6 @@
 package net.builderdog.ancient_aether;
 
+import io.github.razordevs.aeroblender.aether.AetherRuleCategory;
 import net.builderdog.ancient_aether.advancement.AncientAetherTriggers;
 import net.builderdog.ancient_aether.attachments.AncientAetherDataAttachments;
 import net.builderdog.ancient_aether.block.AncientAetherBlockSets;
@@ -25,8 +26,8 @@ import net.builderdog.ancient_aether.world.density.AncientAetherDensityFunctionT
 import net.builderdog.ancient_aether.world.feature.AncientAetherFeatures;
 import net.builderdog.ancient_aether.world.structure.AncientAetherStructureProcessors;
 import net.builderdog.ancient_aether.world.structure.AncientAetherStructureTypes;
-import net.builderdog.ancient_aether.world.tree.foliage.AncientAetherFoliagePlacers;
 import net.builderdog.ancient_aether.world.tree.decorator.AncientAetherTreeDecorators;
+import net.builderdog.ancient_aether.world.tree.foliage.AncientAetherFoliagePlacers;
 import net.minecraft.SharedConstants;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -50,7 +51,6 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import io.github.razordevs.aeroblender.aether.AetherRuleCategory;
 import terrablender.api.Regions;
 import terrablender.api.SurfaceRuleManager;
 
@@ -187,6 +187,14 @@ public class AncientAether {
                     "builtin/ancient_aether_aether_genesis_compat",
                     Component.translatable("pack.ancient_aether.compatibility.aether_genesis.title"),
                     Component.literal("Ancient Aether and Aether Genesis worldgen, structures, recipes and loot"),
+                    true, PackSource.BUILT_IN);
+        }
+
+        if (event.getPackType() == PackType.SERVER_DATA && ModList.get().isLoaded("aether_dungeon_plus")) {
+            setupPack(event, "packs/ancient_aether_aether_dungeon_plus_compat",
+                    "builtin/ancient_aether_aether_dungeon_plus_compat",
+                    Component.translatable("pack.ancient_aether.compatibility.aether_dungeon_plus.title"),
+                    Component.literal("Ancient Aether and Aether Dungeon Plus worldgen"),
                     true, PackSource.BUILT_IN);
         }
 
