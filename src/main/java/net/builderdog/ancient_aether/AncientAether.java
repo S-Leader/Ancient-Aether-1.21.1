@@ -190,14 +190,6 @@ public class AncientAether {
                     true, PackSource.BUILT_IN);
         }
 
-        if (event.getPackType() == PackType.SERVER_DATA && ModList.get().isLoaded("aether_dungeon_plus")) {
-            setupPack(event, "packs/ancient_aether_aether_dungeon_plus_compat",
-                    "builtin/ancient_aether_aether_dungeon_plus_compat",
-                    Component.translatable("pack.ancient_aether.compatibility.aether_dungeon_plus.title"),
-                    Component.literal("Ancient Aether and Aether Dungeon Plus worldgen"),
-                    true, PackSource.BUILT_IN);
-        }
-
         if (event.getPackType() == PackType.SERVER_DATA) {
             setupPack(event, "packs/ancient_aether_worldgen_overrides",
                     "builtin/ancient_aether_worldgen_overrides",
